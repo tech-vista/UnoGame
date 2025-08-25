@@ -8,3 +8,6 @@ COPY --chown=nakama:nakama ./src/index.js /nakama/data/modules/build/index.js
 
 # Copy the configuration file
 COPY --chown=nakama:nakama ./local.yml /nakama/data/
+
+# Use local.yml as default config (so Nakama doesn’t fall back to CockroachDB)
+ENTRYPOINT ["/nakama/nakama", "--config", "/nakama/data/local.yml"]

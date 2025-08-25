@@ -1,12 +1,20 @@
 console:
   max_message_size_bytes: 409600
+
 logger:
   level: "DEBUG"
+
 runtime:
   js_entrypoint: "build/index.js"
+
 session:
   token_expiry_sec: 7200 # 2 hours
+
 socket:
   max_message_size_bytes: 4096 # reserved buffer
   max_request_size_bytes: 131072
   server_key: "defaultkey"
+
+database:
+  address:
+    - "postgres://postgres:localdb@postgres:5432/nakama?sslmode=disable"
