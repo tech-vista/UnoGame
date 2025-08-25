@@ -1,0 +1,40 @@
+services:
+  postgres:
+    image: postgres:12-alpine
+    environment:
+      - POSTGRES_DB=nakama
+      - POSTGRES_PASSWORD=localdb
+    expose:
+      - "5432"
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+
+  nakama:
+    build: .
+    depends_on:
+      - postgres
+    entrypoint:
+      - "/bin/sh"
+      - "-ecx"
+      - >
+        /nakama/nakama migrate up --database.address postgres://postgres:localdb@postgres:5432/nakama?sslmode=disable &&
+        /nakama/nakama --config /nakama/data/local.yml --database.address postgres://postgres:localdb@postgres:5432/nakama?sslmode=disable
+    expose:
+      - "7349"
+      - "7350"
+      - "7351"
+    healthcheck:
+      test: ["CMD", "/nakama/nakama", "healthcheck"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    ports:
+      - "7349:7349"
+      - "7350:7350"
+      - "7351:7351"
+    restart: unless-stopped
+
+volumes:
+  postgres_data:
